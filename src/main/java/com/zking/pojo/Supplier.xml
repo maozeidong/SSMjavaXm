@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zking.dao.ISupplierDao">
+
+
+    <!--一对一-->
+    <resultMap id="supplierresultmap" type="com.zking.pojo.Supplier">
+        <id column="id" property="id"></id>
+        <result column="suppliername" property="suppliername"></result>
+        <result column="suppliershort" property="suppliershort"></result>
+        <result column="supplieraddress" property="supplieraddress"></result>
+        <result column="suppliertelephone" property="suppliertelephone"></result>
+        <result column="supplieremail" property="supplieremail"></result>
+        <result column="supplierzipcode" property="supplierzipcode"></result>
+        <result column="supplieraccount" property="supplieraccount"></result>
+        <result column="faxtosupplier" property="faxtosupplier"></result>
+        <result column="suppliercontact" property="suppliercontact"></result>
+        <result column="suppliercontactnumber" property="suppliercontactnumber"></result>
+        <association property="bank" javaType="com.zking.pojo.Bank">
+            <result column="openingbank" property="openingbank"></result>
+        </association>
+    </resultMap>
+
+
+
+    <select id="getAll" resultMap="supplierresultmap" parameterType="Supplier">
+
+
+
+
+SELECT * FROM ( SELECT c.id,c.suppliername,c.suppliershort,c.supplieraddress,c.suppliertelephone,c.supplieremail,c.supplierzipcode,c.supplieraccount,b.openingbank,c.faxtosupplier,c.suppliercontact,c.suppliercontactnumber FROM supplier c INNER JOIN bank b ON c.opid=b.id ORDER BY c.id DESC) abc
+
+        <where>
+
+
+            <if test="suppliername!=null">
+
+                suppliername  LIKE  '%'  #{suppliername}  '%'
+
+            </if>
+
+
+        </where>
+LIMIT #{start},#{end}
+
+
+
+    </select>
+
+
+
+
+
+    <select id="getAllCount" resultType="java.lang.Integer" parameterType="Supplier">
+
+
+        SELECT COUNT(id) FROM supplier
+        <where>
+
+
+            <if test="suppliername!=null">
+
+                suppliername  LIKE  '%'  #{suppliername}  '%'
+
+            </if>
+
+
+        </where>
+
+
+
+
+    </select>
+
+
+    <select id="getAllBank" resultType="Bank" >
+
+
+        SELECT * FROM bank
+
+
+
+    </select>
+
+
+
+
+    <insert id="insertsupplier" parameterType="Supplier">
+
+INSERT INTO supplier  (suppliername,suppliershort,supplieraddress,suppliertelephone,supplieremail,supplierzipcode,supplieraccount,opid,faxtosupplier,suppliercontact,suppliercontactnumber) VALUES( #{suppliername},#{suppliershort},#{supplieraddress},#{suppliertelephone},#{supplieremail},#{supplierzipcode},#{supplieraccount},#{opid},#{faxtosupplier},#{suppliercontact},#{suppliercontactnumber})
+
+</insert>
+
+
+    <select id="insertselect" parameterType="Supplier" resultType="java.lang.Integer">
+
+        SELECT COUNT(id) FROM supplier WHERE suppliername=#{suppliername}
+
+
+    </select>
+
+
+
+
+    <update id="updatesupplier" parameterType="Supplier">
+
+
+UPDATE supplier SET suppliershort=#{suppliershort},supplieraddress=#{supplieraddress},suppliertelephone=#{suppliertelephone},supplieremail=#{supplieremail},supplierzipcode=#{supplierzipcode},supplieraccount=#{supplieraccount},opid=#{opid},faxtosupplier=#{faxtosupplier},suppliercontact=#{suppliercontact},suppliercontactnumber=#{suppliercontactnumber} WHERE id =#{id}
+
+
+
+
+    </update>
+
+
+    <update id="updatesupplierabc" parameterType="Supplier">
+
+
+        UPDATE supplier SET suppliershort=#{suppliershort},supplieraddress=#{supplieraddress},suppliertelephone=#{suppliertelephone},supplieremail=#{supplieremail},supplierzipcode=#{supplierzipcode},supplieraccount=#{supplieraccount},faxtosupplier=#{faxtosupplier},suppliercontact=#{suppliercontact},suppliercontactnumber=#{suppliercontactnumber} WHERE id =#{id}
+
+
+
+
+    </update>
+
+    <delete id="deletesupplier" parameterType="java.lang.Integer">
+
+
+      DELETE supplier,commodity FROM supplier LEFT JOIN commodity ON supplier.id=commodity.sid WHERE supplier.id=#{id}
+
+    </delete>
+
+
+
+    <select id="selectsupplierAll" resultType="Supplier">
+
+        SELECT * FROM Supplier
+
+    </select>
+
+
+</mapper>

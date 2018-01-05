@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zking.dao.ICommodityDao">
+
+
+    <!--一对一-->
+    <resultMap id="commodityresultmap" type="com.zking.pojo.Commodity">
+        <id column="id" property="id"></id>
+        <result column="productname" property="productname"></result>
+        <result column="commodityreferred" property="commodityreferred"></result>
+        <result column="originofgoods" property="originofgoods"></result>
+        <result column="unit" property="unit"></result>
+        <result column="briefintroduction" property="briefintroduction"></result>
+        <result column="approvalnumber" property="approvalnumber"></result>
+        <result column="batchnumber" property="batchnumber"></result>
+        <result column="specification" property="specification"></result>
+        <result column="packaging" property="packaging"></result>
+        <association property="supplier" javaType="com.zking.pojo.Supplier">
+            <result column="suppliername" property="suppliername"></result>
+        </association>
+    </resultMap>
+
+
+
+    <select id="getAll" resultMap="commodityresultmap" parameterType="Commodity">
+
+
+        SELECT * FROM  (SELECT c.id,c.productname,c.commodityreferred,c.originofgoods,c.unit,s.suppliername,c.briefintroduction,c.approvalnumber,c.batchnumber,c.specification,c.packaging FROM commodity c INNER JOIN supplier s ON c.sid=s.id ORDER BY c.id DESC ) abc
+
+        <where>
+
+
+            <if test="productname!=null">
+
+                productname  LIKE  '%'  #{productname}  '%'
+
+            </if>
+
+
+        </where>
+
+        LIMIT #{start},#{end}
+
+
+    </select>
+
+
+
+    <select id="getAllCount" resultType="java.lang.Integer" parameterType="Commodity">
+
+
+        SELECT COUNT(id) FROM commodity
+        <where>
+
+
+            <if test="productname!=null">
+
+                productname  LIKE  '%'  #{productname}  '%'
+
+            </if>
+
+
+        </where>
+
+
+
+
+    </select>
+
+
+
+
+<insert id="insertCommodity" parameterType="Commodity">
+
+    INSERT INTO commodity (productname,commodityreferred,originofgoods,unit,sid,briefintroduction,approvalnumber,batchnumber,specification,packaging) VALUES(#{productname},#{commodityreferred},#{originofgoods},#{unit},#{sid},#{briefintroduction},#{approvalnumber},#{batchnumber},#{specification},#{packaging})
+
+</insert>
+
+
+    <select id="selectinsertcommodity" parameterType="Commodity" resultType="java.lang.Integer">
+
+         SELECT COUNT(id) FROM commodity WHERE productname=#{productname}
+
+
+    </select>
+
+
+    <delete id="deletecommodity" parameterType="java.lang.Integer">
+
+        DELETE  FROM  commodity WHERE  id=#{id}
+
+
+    </delete>
+
+
+
+    <update id="updatecommodityAll" parameterType="Commodity">
+
+        UPDATE commodity SET productname=#{productname},commodityreferred=#{commodityreferred},originofgoods=#{originofgoods},unit=#{unit},sid=#{sid},briefintroduction=#{briefintroduction},approvalnumber=#{approvalnumber},batchnumber=#{batchnumber},specification=#{specification},packaging=#{packaging} WHERE id=#{id}
+
+    </update>
+
+
+    <update id="updatecommodity" parameterType="Commodity">
+
+        UPDATE commodity SET productname=#{productname},commodityreferred=#{commodityreferred},originofgoods=#{originofgoods},unit=#{unit},briefintroduction=#{briefintroduction},approvalnumber=#{approvalnumber},batchnumber=#{batchnumber},specification=#{specification},packaging=#{packaging} WHERE id=#{id}
+
+    </update>
+
+</mapper>

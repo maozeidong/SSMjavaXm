@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zking.dao.IClientDao">
+
+    <!--一对一-->
+    <resultMap id="clientresultmap" type="com.zking.pojo.Client">
+        <id column="id" property="id"></id>
+        <result column="customername" property="customername"></result>
+        <result column="altek" property="altek"></result>
+        <result column="customeraddress" property="customeraddress"></result>
+        <result column="customerphone" property="customerphone"></result>
+        <result column="customeremail" property="customeremail"></result>
+        <result column="customerzipcode" property="customerzipcode"></result>
+        <result column="requesting" property="requesting"></result>
+        <result column="customerfax" property="customerfax"></result>
+        <result column="persontocontact" property="persontocontact"></result>
+        <result column="contactnumber" property="contactnumber"></result>
+        <association property="bank" javaType="com.zking.pojo.Bank">
+            <result column="openingbank" property="openingbank"></result>
+        </association>
+    </resultMap>
+
+
+<select id="getAll" resultMap="clientresultmap" parameterType="Client">
+
+
+SELECT * FROM (SELECT c.id,c.customername,c.altek,c.customeraddress,c.customerphone,c.customeremail,c.customerzipcode,c.requesting,b.openingbank,c.customerfax,c.persontocontact,c.contactnumber FROM client c INNER JOIN bank b ON c.opid=b.id ORDER BY c.id DESC) abc
+
+<where>
+
+
+    <if test="customername!=null">
+
+        customername  LIKE  '%'  #{customername}  '%'
+
+    </if>
+
+
+</where>
+
+LIMIT #{start},#{end}
+
+
+</select>
+
+
+
+
+
+    <select id="getAllCount" resultType="java.lang.Integer" parameterType="Client">
+
+
+   SELECT COUNT(id) FROM client
+        <where>
+
+
+            <if test="customername!=null">
+
+                customername  LIKE  '%'  #{customername}  '%'
+
+            </if>
+
+
+        </where>
+
+
+
+
+    </select>
+
+
+
+
+
+
+
+
+
+    <insert id="insertClient" parameterType="Client">
+
+
+      INSERT INTO client (customername,altek,customeraddress,customerphone, customeremail,customerzipcode,requesting,opid,customerfax,persontocontact,contactnumber)VALUES(#{customername},#{altek},#{customeraddress},#{customerphone},#{customeremail},#{customerzipcode},#{requesting},#{opid},#{customerfax},#{persontocontact},#{contactnumber})
+
+
+
+    </insert>
+
+
+<select id="selectclientinsert" parameterType="Client" resultType="java.lang.Integer">
+
+
+    SELECT COUNT(id) FROM client WHERE customername=#{customername}
+
+
+
+
+</select>
+
+
+    <delete id="deleteclient" parameterType="java.lang.Integer">
+
+
+        DELETE  FROM client WHERE id=#{id}
+
+
+    </delete>
+
+
+    <update id="updateclient" parameterType="Client">
+
+UPDATE client SET customername=#{customername},altek=#{altek},customeraddress=#{customeraddress},customerphone=#{customerphone},customeremail=#{customeremail},customerzipcode=#{customerzipcode},requesting=#{requesting},opid=#{opid},customerfax=#{customerfax},persontocontact=#{persontocontact},contactnumber=#{contactnumber} WHERE id=#{id}
+
+    </update>
+
+
+    <update id="updateclientabc" parameterType="Client">
+
+        UPDATE client SET customername=#{customername},altek=#{altek},customeraddress=#{customeraddress},customerphone=#{customerphone},customeremail=#{customeremail},customerzipcode=#{customerzipcode},requesting=#{requesting},customerfax=#{requesting},persontocontact=#{persontocontact},contactnumber=#{contactnumber} WHERE id=#{id}
+
+    </update>
+
+</mapper>

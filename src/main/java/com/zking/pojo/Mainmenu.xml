@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zking.dao.IMainmenuDao">
+
+
+    <select id="getAll" resultType="Mainmenu" parameterType="java.lang.Integer">
+
+
+
+       SELECT * from mainmenu m where m.mid in (SELECT r.mid FROM role r INNER JOIN  jurisdiction j ON r.id=j.rid  WHERE j.id=#{id} )
+
+
+
+
+    </select>
+
+
+    <select id="getA" resultType="Mainmenu" parameterType="Qx">
+
+
+
+       SELECT * FROM mainmenu WHERE mid IN
+(SELECT r.mmid FROM jurisdiction j INNER JOIN rolea r ON j.rid=r.id WHERE j.id=#{id} AND r.mtext=#{text})
+
+
+
+    </select>
+
+</mapper>

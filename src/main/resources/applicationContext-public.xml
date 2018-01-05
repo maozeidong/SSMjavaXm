@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+	http://www.springframework.org/schema/beans      http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
+        http://www.springframework.org/schema/aop        http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
+	http://www.springframework.org/schema/context    http://www.springframework.org/schema/context/spring-context-4.3.xsd
+	http://www.springframework.org/schema/tx         http://www.springframework.org/schema/tx/spring-tx-4.3.xsd">
+
+
+    <!--c3p0配置-->
+    <bean id="ds" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="user" value="root"></property>
+        <property name="password" value="sasa"></property>
+        <property name="driverClass" value="com.mysql.jdbc.Driver"></property>
+        <property name="jdbcUrl" value="jdbc:mysql://localhost:3306/ssmjavaxm?characterEncoding=utf-8"></property>
+        <property name="initialPoolSize" value="5"></property>
+        <property name="maxPoolSize" value="100"></property>
+    </bean>
+
+
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <!--引入数据源-->
+        <property name="dataSource" ref="ds"></property>
+        <!--加载MyBatis配置文件-->
+        <property name="configLocation" value="classpath:mybatis-config.xml"></property>
+        <!--加载映射文件-->
+        <property name="mapperLocations" value="classpath:com/zking/pojo/*.xml"></property>
+    </bean>
+
+
+    <!--配置事务-->
+    <bean id="transaction" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="ds"></property>
+    </bean>
+
+    <!--配置事务的属性-->
+    <tx:advice transaction-manager="transaction" id="transactionInterceptor">
+        <tx:attributes>
+            <tx:method name="add*" propagation="REQUIRED"/>
+            <tx:method name="insert*" propagation="REQUIRED"/>
+            <tx:method name="update*" propagation="REQUIRED"/>
+            <tx:method name="delete*" propagation="REQUIRED"/>
+            <tx:method name="get*" read-only="true" />
+            <tx:method name="*"></tx:method>
+        </tx:attributes>
+    </tx:advice>
+
+
+    <!--配置事务的切点-->
+    <aop:config>
+        <aop:advisor advice-ref="transactionInterceptor" pointcut="execution(* com.zking.dao.*.*(..))"></aop:advisor>
+    </aop:config>
+
+
+
+
+
+
+
+    <!--配置mapper对象-->
+    <bean id="IMainmenuDaomapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <!--设置数据库连接-->
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+        <!--设置当前mapper对象-->
+        <property name="mapperInterface" value="com.zking.dao.IMainmenuDao"></property>
+    </bean>
+
+
+    <!--配置mapper对象-->
+    <bean id="IClientDaomapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <!--设置数据库连接-->
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+        <!--设置当前mapper对象-->
+        <property name="mapperInterface" value="com.zking.dao.IClientDao"></property>
+    </bean>
+
+
+    <!--配置mapper对象-->
+    <bean id="ISupplierDaomapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <!--设置数据库连接-->
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+        <!--设置当前mapper对象-->
+        <property name="mapperInterface" value="com.zking.dao.ISupplierDao"></property>
+    </bean>
+
+
+
+    <!--配置mapper对象-->
+    <bean id="iCommodityDaomapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <!--设置数据库连接-->
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+        <!--设置当前mapper对象-->
+        <property name="mapperInterface" value="com.zking.dao.ICommodityDao"></property>
+    </bean>
+
+
+    <!--配置mapper对象-->
+    <bean id="IEnterDaomapper" class="org.mybatis.spring.mapper.MapperFactoryBean">
+        <!--设置数据库连接-->
+        <property name="sqlSessionFactory" ref="sqlSessionFactory"></property>
+        <!--设置当前mapper对象-->
+        <property name="mapperInterface" value="com.zking.dao.IEnterDao"></property>
+    </bean>
+
+</beans>
